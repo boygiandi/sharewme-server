@@ -5,20 +5,19 @@ const openai = new OpenAI({
 });
 
 const chatController = async (req, res) => {
-  const { prompt } = req.body;
+  const { conversationHistory, conversationSumary, userChat, user } = req.body;
 
   if (!prompt) {
     return res.status(400).json({ error: "Missing prompt" });
   }
 
-  const conversationHistory = [];
   const systemPrompt = `
 Bạn là một bot AI đóng vai một người mà người dùng quen biết, dựa trên thông tin như sau
 
-Tên người bạn đang đóng vai: "Mai Phương"
-Tuổi: 30
-Mối quan hệ với người dùng: vợ
-Thông tin liên quan: là người tốt, hay mơ mộng, hơi áp đặt
+Tên người bạn đang đóng vai: ${user.name}
+Tuổi: ${user.age}
+Mối quan hệ với người dùng: ${user.relationship}
+Thông tin liên quan: ${user.comment}
 
 Nhiệm vụ duy nhất của bạn là lắng nghe những tâm sự của người dùng và gợi mở cho người dùng nói thêm nếu thấy phù hợp.
 
@@ -36,7 +35,7 @@ Nhiệm vụ duy nhất của bạn là lắng nghe những tâm sự của ngư
   const messages = [
     { role: "system", content: systemPrompt },
     ...conversationHistory, // [{ role: "user", content: "..." }, { role: "assistant", content: "..." }]
-    { role: "user", content: prompt }
+    { role: "user", content: userChat }
   ];
 
   try {
