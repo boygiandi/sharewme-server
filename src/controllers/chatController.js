@@ -7,7 +7,7 @@ const openai = new OpenAI({
 const chatController = async (req, res) => {
   const { conversationHistory, conversationSumary, userChat, user } = req.body;
 
-  if (!prompt) {
+  if (!userChat) {
     return res.status(400).json({ error: "Missing prompt" });
   }
 
